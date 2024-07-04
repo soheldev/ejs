@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ejs-app-deployment
+  namespace: ejs-app-service
 spec:
   replicas: 1
   selector:
@@ -17,16 +18,24 @@ spec:
         image: soheldev/my-ejs-app:latest
         ports:
         - containerPort: 3257
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: ejs-app-service
+  namespace: ejs-app-service
 spec:
   type: NodePort
   ports:
     - port: 3250
       targetPort: 3257
-      nodePort: 32507  # Optional: You can specify a NodePort or let Kubernetes assign one
+      nodePort: 32507
   selector:
     app: ejs-app
